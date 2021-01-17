@@ -1,0 +1,33 @@
+.flex_center_center{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.flex_spacearound_center{
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.flex_spacearound_baseline{
+  display: flex;
+  justify-content: space-around;
+  align-items: baseline;
+}
+
+.height_width_100{
+  height: 100%;
+  width: 100%;
+}
+
+.white{
+  color:#ffffff;
+}
+
+.black{
+  color:#000000;
+}
+.font_weight_bold{
+  font-weight:bold;
+}

@@ -11,10 +11,10 @@ export default function Routes() {
       <Route exact path="/">
         <Home />
       </Route>
-      <Route path="/settings">
+      <Route path="/settings/:gameType">
         <Settings />
       </Route>
-      <Route path="/game/:primaryKey">
+      <Route path="/game/:gameType/:primaryKey">
         <Game />
       </Route>
     </Switch>

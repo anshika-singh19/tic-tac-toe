@@ -7,7 +7,6 @@ import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
 import ArrowBack from '@material-ui/icons/ArrowBack';
-import BackgroundImage from "../../assets/images/game_home_bg.png";
 import Refresh from "@material-ui/icons/Refresh";
 import Settings from "@material-ui/icons/Settings";
 import Button from '@material-ui/core/Button';
@@ -16,17 +15,19 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import style from "./style"
+import { withStyles } from "@material-ui/core/styles";
 
+const initialState = [[null, null, null], [null, null, null], [null, null, null]]
 class GameComponent extends Component {
-
   state = {
-    board: [[null, null, null], [null, null, null], [null, null, null]],
+    board: [...initialState],
     isPrimaryNext: true,
     winner: "",
     player1Wins: 0,
     player2Wins: 0
   }
-  findWinner = (squares) => {
+  findWinner = (box) => {
     const cases = [
       [[0, 0], [0, 1], [0, 2]],
       [[0, 0], [1, 1], [2, 2]],
@@ -40,8 +41,8 @@ class GameComponent extends Component {
     let winnerKey = "";
     for (let i = 0; i < cases.length; i++) {
       const [[a1, a2], [b1, b2], [c1, c2]] = cases[i];
-      if (squares[a1][a2] && squares[b1][b2] && squares[c1][c2] && (squares[a1][a2] === squares[b1][b2]) && (squares[a1][a2] === squares[c1][c2])) {
-        winnerKey = squares[a1][a2]
+      if (box[a1][a2] && box[b1][b2] && box[c1][c2] && (box[a1][a2] === box[b1][b2]) && (box[a1][a2] === box[c1][c2])) {
+        winnerKey = box[a1][a2]
       }
     }
     if (winnerKey) {
@@ -51,11 +52,27 @@ class GameComponent extends Component {
         player2Wins: (winnerKey !== this.props.match.params.primaryKey && this.state.player2Wins + 1) || this.state.player2Wins,
       })
     }
-    else if (squares.every(item => !item.includes(null)) && !winnerKey) {
+    else if (box.every(item => !item.includes(null)) && !winnerKey) {
       this.setState({
         winner: "none"
       })
     }
+
+    if (this.props.match.params.gameType === "withAi" && box.some(item => item.includes(null)) && !this.state.isPrimaryNext) {
+      this.handleAiTurn(box);
+    }
+  }
+
+  handleAiTurn = (box) => {
+    setTimeout(() => {
+      let index = 0
+      let id = 0
+      while (box[index][id]) {
+        index = Math.floor(Math.random() * 3);
+        id = Math.floor(Math.random() * 3);
+      }
+      this.handleClick(index, id);
+    }, 1000);
   }
 
   handleClick = (index, id) => {
@@ -64,8 +81,8 @@ class GameComponent extends Component {
 
     if (newBoard[index][id]) return;
 
-    // Put an X or an O in the clicked square
-    newBoard[index][id] = this.state.isPrimaryNext ? (this.props.match.params.primaryKey === "x" ? "x" : "o") : (this.props.match.params.primaryKey === "x" ? "o" : "x");
+    newBoard[index][id] = this.state.isPrimaryNext ? (this.props.match.params.primaryKey === "x" ? "x" : "o")
+      : (this.props.match.params.primaryKey === "x" ? "o" : "x");
 
     this.setState({
       board: newBoard,
@@ -76,7 +93,7 @@ class GameComponent extends Component {
   };
   handleRefresh = () => {
     this.setState({
-      board: [[null, null, null], [null, null, null], [null, null, null]],
+      board: initialState,
       winner: ""
     })
   }
@@ -84,44 +101,37 @@ class GameComponent extends Component {
     this.props.history.goBack()
   }
   render() {
+    const { classes } = this.props
+
     return (
-      <div style={{
-        height: "100vh", backgroundImage: `url(${BackgroundImage})`, backgroundRepeat: "no-repeat",
-        backgroundSize: "cover", overflow: "hidden", width: "100vw",
-        margin: 0
-      }}>
+      <div className={classes.gameWraper}>
         <AppBar position="static" color="transparent">
           <Toolbar>
             <IconButton edge="start" aria-label="menu" onClick={this.handleBack}>
-              <ArrowBack style={{ color: "white" }} />
+              <ArrowBack className="white" />
             </IconButton>
           </Toolbar>
         </AppBar>
-        <div style={{
-          display: "flex", justifyContent: "center", alignItems: "center", flexDirection: "column", height: "90%", marginBottom: -50, marginTop: -32
 
-        }}>
-          <div style={{
-            display: "flex", justifyContent: "space-around", alignItems: "center", marginBottom: 15, width: "100%"
-          }}>
-            <Typography variant="button" style={{ color: "white" }}> Player 1</Typography>
+        <div className={`flex_center_center ${classes.gameMain}`}>
+          <div className="flex_spacearound_center" style={{ marginBottom: 15, width: "100%" }}>
+            <Typography variant="button" className="white"> Player 1</Typography>
             <Chip style={{ boxShadow: "0px 0px 4px 1px #1a6177", color: "white" }}
               label={`${this.state.player1Wins} -${this.state.player2Wins} `} variant="outlined" />
-            < Typography variant="button" style={{ color: "white" }}> Player 2</Typography>
+            < Typography variant="button" className="white"> Player 2</Typography>
           </div>
-          <Board board={this.state.board} handleClick={this.handleClick} />
+          <Board board={this.state.board} handleClick={this.handleClick}
+            gameType={this.props.match.params.gameType} isPrimaryNext={this.state.isPrimaryNext} />
         </div >
-        <div style={{
-          display: "flex", justifyContent: "space-around", alignItems: "baseline", margin: "auto",
-          width: 100
-        }}>
-          <Link to="/" style={{ textDecoration: 'none', }}>
-            <Settings style={{ padding: 5, boxShadow: "0px 0px 4px 1px #864c02", borderRadius: 20, color: "black" }} />
-          </Link>
-          <Refresh onClick={this.handleRefresh} style={{ padding: 5, boxShadow: "0px 0px 4px 1px #864c02", borderRadius: 20, color: "inherit" }} />
-        </div>
-        <Dialog
 
+        <div className="flex_spacearound_baseline" style={{ margin: "auto", width: 100 }}>
+          <Link to="/" style={{ textDecoration: 'none', }}>
+            <Settings className={`black ${classes.chip}`} />
+          </Link>
+          <Refresh onClick={this.handleRefresh} className={`black ${classes.chip}`} />
+        </div>
+
+        <Dialog
           open={!!this.state.winner}
           onClose={() => this.setState({ winner: "" })}
           aria-labelledby="alert-dialog-title"
@@ -149,4 +159,4 @@ class GameComponent extends Component {
   }
 }
 
-export default withRouter(GameComponent);
+export default withRouter(withStyles(style)(GameComponent));

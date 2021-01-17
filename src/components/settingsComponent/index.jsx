@@ -22,7 +22,7 @@ class SettingsComponent extends Component {
     this.props.history.goBack();
   }
   handleContinue = () => {
-    this.props.history.push(`/game/${this.state.primaryKey}`)
+    this.props.history.push(`/game/${this.props.match.params.gameType}/${this.state.primaryKey}`)
   }
   render() {
     return (
@@ -37,14 +37,15 @@ class SettingsComponent extends Component {
             </IconButton>
           </Toolbar>
         </AppBar>
-        <div style={{ display: "flex", justifyContent: "center", alignItems: "center", flexDirection: "column", height: "70%", }}>
+        <div className="flex_center_center" style={{ flexDirection: "column", height: "70%", }}>
           <Typography variant="h6">Pick your side</Typography>
 
           <RadioGroup onClick={e => {
             this.setState({
               primaryKey: e.target.value
             })
-          }} row aria-label="position" name="position" defaultValue="top" style={{ display: "flex", justifyContent: "space-around", alignItems: "center", }}>
+          }} row aria-label="position" name="position" defaultValue="top"
+            className="flex_spacearound_center">
             <FormControlLabel
               value="x"
               control={<Radio color="primary" />}
