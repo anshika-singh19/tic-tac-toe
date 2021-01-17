@@ -1,11 +1,10 @@
 import React, { Component } from 'react'
-import { Link, withRouter } from "react-router-dom";
+import { withRouter } from "react-router-dom";
 import XComponent from "../xComponent";
 import OComponent from "../oComponent";
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
-import Chip from "@material-ui/core/Chip";
 import { Typography } from '@material-ui/core';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';

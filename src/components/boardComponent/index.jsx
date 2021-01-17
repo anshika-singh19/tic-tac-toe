@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React from 'react'
 
 import Grid from "@material-ui/core/Grid";
 import XComponent from "../xComponent";
@@ -10,6 +10,18 @@ const useStyles = makeStyles(style);
 
 export default function BoardComponent(props) {
   const classes = useStyles();
+
+  const handleBoxClick = (index, ind) => {
+    if (props.gameType !== "withAi") {
+      props.handleClick(index, ind);
+    }
+    else {
+      if (props.isPrimaryNext) {
+        props.handleClick(index, ind);
+      }
+    }
+  }
+
   return (
     <Grid container direction='row' spacing={0} className={classes.boardWrapper}>
       {props.board.map((boardItem, index) =>
@@ -25,8 +37,7 @@ export default function BoardComponent(props) {
                 item
                 xs={4}
                 key={ind}
-                onClick={() => props.gameType === "withAi" && props.isPrimaryNext
-                  && props.handleClick(index, ind)}
+                onClick={() => handleBoxClick(index, ind)}
                 className="flex_center_center"
                 style={{ borderRight: ind !== 2 && "2px solid #d0d0d0" }}
               >

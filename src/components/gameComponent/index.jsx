@@ -18,14 +18,18 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import style from "./style"
 import { withStyles } from "@material-ui/core/styles";
 
-const initialState = [[null, null, null], [null, null, null], [null, null, null]]
+
+
 class GameComponent extends Component {
   state = {
-    board: [...initialState],
+    board: [[null, null, null], [null, null, null], [null, null, null]],
     isPrimaryNext: true,
     winner: "",
     player1Wins: 0,
     player2Wins: 0
+  }
+  componentDidMount = () => {
+
   }
   findWinner = (box) => {
     const cases = [
@@ -93,7 +97,7 @@ class GameComponent extends Component {
   };
   handleRefresh = () => {
     this.setState({
-      board: initialState,
+      board: [[null, null, null], [null, null, null], [null, null, null]],
       winner: ""
     })
   }
